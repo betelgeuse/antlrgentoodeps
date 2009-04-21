@@ -1,0 +1,98 @@
+gunit Depend;
+
+expr:
+"  ||  ( app-foo/bar lol? ( >=dev-java/lol-3 )  )  " OK
+
+any_of:
+"|| ( app-foo/bar app-foo/another )" OK
+"||( app-foo/bar )" FAIL
+"|| (app-foo/bar )" FAIL
+"|| ( app-foo/bar)" FAIL
+
+use_conditional:
+"foo? ( app-foo/bar )" OK
+"foo ? ( )" FAIL
+"foo?( app-foo/bar )" FAIL
+
+slot_name:
+".SLOT" FAIL
+
+pkg_dep:
+">=dev-java/lol-3" OK
+"cat/foo-3" FAIL
+
+eapi0_version_spec:
+"1.1.1a-r3" OK
+"3" OK
+
+state_suffix:
+"_alpha22" OK
+"_alpha2a" FAIL
+"_foo" FAIL
+
+revision:
+"-r123" OK
+"-ra" FAIL
+"-r123a" FAIL
+
+qpn:
+"app-foo/bar" OK
+
+use_flag:
+"foo" OK
+"foo+" OK
+"foo_a" OK
+"f@@@" OK
+"f-@2" OK
+"f-r1" OK
+"@@" FAIL
+"+FOO" FAIL
+
+category:
+".foo" OK
+".foo." OK
+"foo" OK
+"foo1" OK
+"11foo" OK
+"app-foo" OK
+"virtual" OK
+"alpha" OK
+"foo--" OK
+"-foo" FAIL
+
+pn:
+"_foo" OK
+"+bar11+" OK
+"foo--" OK
+"-laa" FAIL
+"foo-12" FAIL
+"foo-1" FAIL
+
+integer:
+"" FAIL
+"1213" OK
+"1221a" FAIL
+
+alphanum:
+"1" OK
+"D" OK
+"c" OK
+"_" FAIL
+"aa" FAIL
+"c1c" FAIL
+
+UPPER:
+"A" OK
+"p" FAIL
+"CC" FAIL
+
+LOWER:
+"P" FAIL
+"k" OK
+"pp" FAIL
+
+WS:
+" " OK
+"  " OK
+"	" OK
+"ff" FAIL

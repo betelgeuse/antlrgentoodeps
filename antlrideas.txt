@@ -1,0 +1,8 @@
+Make it clearer when the wrong token matches about what the wrong token is.
+--> provide ascii example input
+
+Disabling alternatives the number is not that useful.
+--> Show the actual code.
+
+start rule EOF
+--> http://thesoftwarelife.blogspot.com/2008/07/antlr-frustrations.html
