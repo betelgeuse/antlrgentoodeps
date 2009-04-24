@@ -1,6 +1,5 @@
 gunit Depend;
-
-expr:
+depend:
 "  ||  ( app-foo/bar lol? ( >=dev-java/lol-3 )  )  " OK
 
 any_of:
@@ -14,16 +13,19 @@ use_conditional:
 "foo ? ( )" FAIL
 "foo?( app-foo/bar )" FAIL
 
-slot_name:
-".SLOT" FAIL
 
 pkg_dep:
-">=dev-java/lol-3" OK
+">=app-cat/pkg-3" OK
+"<app-cat/pkg-1.1.1a_alpha-r4" OK
 "cat/foo-3" FAIL
+">=app-cat/pkg" FAIL
 
 eapi0_version_spec:
+"1.1.1" OK
+"1.22.333a" OK
 "1.1.1a-r3" OK
 "3" OK
+"2_alpha_beta" OK
 
 state_suffix:
 "_alpha22" OK
@@ -38,6 +40,14 @@ revision:
 qpn:
 "app-foo/bar" OK
 
+slot_name:
+".SLOT" FAIL
+"alpha" OK
+"beta" OK
+"123" OK
+"foo" OK
+"a-r" OK
+
 use_flag:
 "foo" OK
 "foo+" OK
@@ -45,6 +55,8 @@ use_flag:
 "f@@@" OK
 "f-@2" OK
 "f-r1" OK
+"alpha" OK
+"123" OK
 "@@" FAIL
 "+FOO" FAIL
 
@@ -57,29 +69,35 @@ category:
 "app-foo" OK
 "virtual" OK
 "alpha" OK
+"beta" OK
 "foo--" OK
 "-foo" FAIL
+"123" OK
+"a-r" OK
 
 pn:
 "_foo" OK
+"_foo-bar" OK
 "+bar11+" OK
 "foo--" OK
+"app-foo-bar" OK
 "-laa" FAIL
 "foo-12" FAIL
 "foo-1" FAIL
+"alpha" OK
+"beta" OK
+"123" OK
+"core" OK
+"core-1.2-r3" FAIL
 
-integer:
+pn_follows:
+"	" OK
+"1.1" FAIL
+
+INTEGER:
 "" FAIL
 "1213" OK
 "1221a" FAIL
-
-alphanum:
-"1" OK
-"D" OK
-"c" OK
-"_" FAIL
-"aa" FAIL
-"c1c" FAIL
 
 UPPER:
 "A" OK
