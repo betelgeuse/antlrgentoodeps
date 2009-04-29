@@ -17,25 +17,28 @@ use_conditional:
 pkg_dep:
 ">=app-cat/pkg-3" OK
 "<app-cat/pkg-1.1.1a_alpha-r4" OK
+"cat.a.gory/packageName-a" OK
+"cat.a.gory/packageName-" OK
+"=.cat.a.gory/packageName-12a" FAIL
 "cat/foo-3" FAIL
 ">=app-cat/pkg" FAIL
 
-eapi0_version_spec:
-"1.1.1" OK
-"1.22.333a" OK
-"1.1.1a-r3" OK
-"3" OK
-"2_alpha_beta" OK
+versioned_dep:
+"=cat.a.gory/packageName-1" OK
+"=cat.a.gory/packageName+a-12a" OK
+"=cat.a.gory/packageName-a-12a" OK
+"=cat.a.gory/packageName-a-12a" OK
+"=cat.a.gory/packageName--12a" OK
+"=sys-devel/automake-1.10*" OK
+">=sys-devel/automake-1.10*" FAIL
 
-state_suffix:
-"_alpha22" OK
-"_alpha2a" FAIL
-"_foo" FAIL
-
-revision:
-"-r123" OK
-"-ra" FAIL
-"-r123a" FAIL
+EAPI0_VERSION_SPEC:
+"-1.1.1" OK
+"-1.22.333a" OK
+"-1.1.1a-r3" OK
+"-3" OK
+"-2_alpha_beta" OK
+"-12a" OK
 
 qpn:
 "app-foo/bar" OK
@@ -47,6 +50,7 @@ slot_name:
 "123" OK
 "foo" OK
 "a-r" OK
+"a-1a" OK
 
 use_flag:
 "foo" OK
@@ -59,10 +63,9 @@ use_flag:
 "123" OK
 "@@" FAIL
 "+FOO" FAIL
+"a-1a" OK
 
 category:
-".foo" OK
-".foo." OK
 "foo" OK
 "foo1" OK
 "11foo" OK
@@ -71,9 +74,13 @@ category:
 "alpha" OK
 "beta" OK
 "foo--" OK
-"-foo" FAIL
 "123" OK
 "a-r" OK
+"cat.a.gory" OK
+"a-1a" OK
+"-foo" FAIL
+".foo" FAIL
+".foo." FAIL
 
 pn:
 "_foo" OK
@@ -81,6 +88,7 @@ pn:
 "+bar11+" OK
 "foo--" OK
 "app-foo-bar" OK
+"pkg-a" OK
 "-laa" FAIL
 "foo-12" FAIL
 "foo-1" FAIL
@@ -93,6 +101,14 @@ pn:
 pn_follows:
 "	" OK
 "1.1" FAIL
+
+operator:
+"<" OK
+"<=" OK
+"=" OK
+"~" OK
+">=" OK
+">" OK
 
 INTEGER:
 "" FAIL
