@@ -24,6 +24,8 @@ pkg_dep:
 "=.cat.a.gory/packageName-12a" FAIL
 "cat/foo-3" FAIL
 ">=app-cat/pkg" FAIL
+"dev-tex/mplib[lua]" OK
+"dev-tex/foo:2" OK
 
 versioned_dep:
 "=cat.a.gory/packageName-1" OK
@@ -36,6 +38,13 @@ versioned_dep:
 
 version_spec:
 "-3" OK
+
+use_dep:
+"[lua]" OK
+"[bar,baz]" OK
+"[-lua]" OK
+"[!bar?]" OK
+"[!bar=,bar?]" OK
 
 EAPI0_VERSION_SPEC:
 "-1.1.1" OK

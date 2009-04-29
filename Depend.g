@@ -43,7 +43,7 @@ use_conditional
 	:	'!'? use_flag '?' WS '(' WS (expr WS)* ')';
 
 pkg_dep
-	:	block_oper? (versioned_dep | qpn);
+	:	block_oper? (versioned_dep | qpn) slot_dep? use_dep?;
 
 versioned_dep
 @init {
@@ -59,18 +59,22 @@ versioned_dep
 block_oper	:	'!' ({features.STRONG_BLOCK}?=> '!'?);
 
 version_spec
-	:	EAPI0_VERSION_SPEC  asterisk? ({features.SLOT_DEPENDS}?=> slot_dep?) ({features.USE_DEPENDS}?=> use_dep? );
+	:	EAPI0_VERSION_SPEC  asterisk?;
 
 asterisk:
 	{accept_asterisk}?=> '*'
 	| {!accept_asterisk}?=>;
-use_dep	:	'[' use_dep_atom (',' use_dep_atom)* ']';
+
+use_dep	:
+	{features.USE_DEPENDS}?=> '[' use_dep_atom (',' use_dep_atom)* ']'
+	| {!features.USE_DEPENDS}?=> ;
 
 use_dep_atom
 	:	('!'|HYPHEN)? use_flag (EQUALS|'?')?;
 
 slot_dep:
-	':' slot_name;
+	{features.SLOT_DEPENDS}?=> ':' slot_name
+	| {!features.SLOT_DEPENDS}?=>;
 
 
 qpn	:	 category '/' pn;
