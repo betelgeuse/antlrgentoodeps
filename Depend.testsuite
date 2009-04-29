@@ -1,6 +1,7 @@
 gunit Depend;
 depend:
 "  ||  ( app-foo/bar lol? ( >=dev-java/lol-3 )  )  " OK
+"" OK
 
 any_of:
 "|| ( app-foo/bar app-foo/another )" OK

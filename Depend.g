@@ -29,7 +29,7 @@ public class EAPIFeatures
 }
 
 
-depend: WS? expr WS?;
+depend: WS? (expr WS?)?;
 
 expr	:	expr_type (WS expr_type)*;
 
