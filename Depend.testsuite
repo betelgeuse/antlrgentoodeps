@@ -32,6 +32,9 @@ versioned_dep:
 "=sys-devel/automake-1.10*" OK
 ">=sys-devel/automake-1.10*" FAIL
 
+version_spec:
+"-3" OK
+
 EAPI0_VERSION_SPEC:
 "-1.1.1" OK
 "-1.22.333a" OK
@@ -102,10 +105,9 @@ pn_follows:
 "	" OK
 "1.1" FAIL
 
-operator:
+OPERATOR:
 "<" OK
 "<=" OK
-"=" OK
 "~" OK
 ">=" OK
 ">" OK

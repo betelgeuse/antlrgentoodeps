@@ -21,6 +21,7 @@ public class EAPIFeatures
 	private Pattern pn_end = Pattern.compile(".*-\\d+");
 	private Pattern version_char = Pattern.compile("[a-z]");
 	private boolean needs_version;
+	private boolean accept_asterisk;
 	public DependParser(TokenStream input, EAPIFeatures features) {
 		this(input);
 		this.features = features;
@@ -50,14 +51,19 @@ versioned_dep
 }
 @after {
 	needs_version = false;
+	accept_asterisk = false;
 }
-:	operator qpn version_spec;
+:	OPERATOR qpn version_spec
+	| EQUALS {accept_asterisk=true;} qpn version_spec;
 
 block_oper	:	'!' ({features.STRONG_BLOCK}?=> '!'?);
 
 version_spec
-	:	EAPI0_VERSION_SPEC ( {features.SLOT_DEPENDS}?=> slot_dep? ) ( {features.USE_DEPENDS}?=> use_dep? );
+	:	EAPI0_VERSION_SPEC  asterisk? ({features.SLOT_DEPENDS}?=> slot_dep?) ({features.USE_DEPENDS}?=> use_dep? );
 
+asterisk:
+	{accept_asterisk}?=> '*'
+	| {!accept_asterisk}?=>;
 use_dep	:	'[' use_dep_atom (',' use_dep_atom)* ']';
 
 use_dep_atom
@@ -136,9 +142,8 @@ fragment REVISION_START: '-r';
 ALPHA: (LOWER|UPPER)+;
 
 HYPHEN: '-';
+OPERATOR:	'<' | '<=' | '~' | '>=' | '>';
 EQUALS:	'=';
-
-operator:	'<' | '<=' | EQUALS | '~' | '>=' | '>';
 
 WS  : (' '|'\r'|'\t'|'\u000C'|'\n')+; //There are places of mandatory ws so don't hide it
 
