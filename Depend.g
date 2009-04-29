@@ -19,7 +19,6 @@ public class EAPIFeatures
 
 	private EAPIFeatures features = new EAPIFeatures();
 	private Pattern pn_end = Pattern.compile(".*-\\d+");
-	private Pattern version_char = Pattern.compile("[a-z]");
 	private boolean needs_version;
 	private boolean accept_asterisk;
 	public DependParser(TokenStream input, EAPIFeatures features) {
@@ -81,27 +80,20 @@ slot_dep:
 
 qpn	:	 category '/' pn;
 
-//pn	:	pn_start ((options { greedy=false; } : pn_char)* (pn_char pn_follows)=>pn_char)? {!pn_end.matcher($pn.text).matches()}?;
 pn	:	pn_start 
 	|	pn_start pn_end;
 
 pn_end
 	:	(options { greedy=false;} : pn_part)* (pn_part pn_follows)=> pn_part {!pn_end.matcher($pn_end.text).matches()}?;
 
-// https://wincent.com/wiki/PEG-style_predicates_in_ANTLR
-pn_middle:
-	(pn_part (pn_follows| ) )=> pn_part;
 pn_start : INTEGER|ALPHA|'+'|'_';
 pn_part:  INTEGER|ALPHA|'+'|'_'|HYPHEN;
-
-//pn_follows: version_spec? WS|EOF;
 
 pn_follows
 :
 	 {needs_version}?=> version_spec (WS|EOF) 
 	 | {!needs_version}?=> (WS|EOF);
 
-//(alphanum|'+'|'_') (alphanum|'+'|'_'|DOT|'-')*
 slot_name
 	:	name[true,true,true,false];
 
