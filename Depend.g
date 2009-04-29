@@ -40,7 +40,7 @@ any_of
 	:	'||' WS '(' WS (expr WS)* ')';
 
 use_conditional
-	:	use_flag '?' WS '(' WS (expr WS)* ')';
+	:	'!'? use_flag '?' WS '(' WS (expr WS)* ')';
 
 pkg_dep
 	:	block_oper? (versioned_dep | qpn);

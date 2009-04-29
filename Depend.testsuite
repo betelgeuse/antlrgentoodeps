@@ -11,6 +11,7 @@ any_of:
 
 use_conditional:
 "foo? ( app-foo/bar )" OK
+"!build? ( sys-apps/sed >=sys-devel/binutils-2.11.90.0.31 )" OK
 "foo ? ( )" FAIL
 "foo?( app-foo/bar )" FAIL
 
