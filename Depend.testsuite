@@ -1,6 +1,7 @@
 gunit Depend;
 depend:
 "  ||  ( app-foo/bar lol? ( >=dev-java/lol-3 )  )  " OK
+"|| ( ( x11-libs/libXtst x11-libs/libX11 ) virtual/x11 )" OK
 "" OK
 
 any_of:
@@ -8,6 +9,9 @@ any_of:
 "||( app-foo/bar )" FAIL
 "|| (app-foo/bar )" FAIL
 "|| ( app-foo/bar)" FAIL
+
+all_of:
+"( app-foo/first app-foo/second )" OK
 
 use_conditional:
 "foo? ( app-foo/bar )" OK

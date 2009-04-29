@@ -34,8 +34,10 @@ depend: WS? (expr WS?)?;
 expr	:	expr_type (WS expr_type)*;
 
 expr_type:
-	any_of | use_conditional | pkg_dep;
+	any_of | use_conditional | all_of | pkg_dep;
 
+all_of
+	: '(' WS expr WS ')';
 any_of
 	:	'||' WS '(' WS (expr WS)* ')';
 
