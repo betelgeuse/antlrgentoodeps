@@ -1,0 +1,4 @@
+gunit UseFlatten walks Depend;
+
+use_conditional walks use_conditional:
+"test? ( app-foo/bar )" -> (FLATTEN PKG_DEP)

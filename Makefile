@@ -16,11 +16,14 @@ $(PARSER_SRC): Depend.run
 
 $(PARSER_CLASS): javac.run
 
-Main.class: Main.java
-	javac  -implicit:none -cp $(shell java-config -dp antlr-3):. Main.java
+%.class: %.java
+	javac  -implicit:none -cp $(shell java-config -dp antlr-3):. $<
 
-test: $(PARSER_CLASS)
+UseFlatten.java: UseFlatten.run
+
+test: $(PARSER_CLASS) UseFlatten.class
 	gunit Depend.testsuite
+	gunit UseFlatten.testsuite
 
 clean:
 	rm -v *.run *.class $(PARSER_SRC)

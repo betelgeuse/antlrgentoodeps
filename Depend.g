@@ -2,8 +2,20 @@ grammar Depend;
 
 options {
 	backtrack=true;
+	output=AST;
 }
-
+tokens {
+	ALL_OF;
+	ANY_OF;
+	CATEGORY;
+	NEGATIVE;
+	PKG_DEP;
+	PN;
+	POSITIVE;
+	SLOT;
+	USE_CONDITIONAL;
+	USE_FLAG;
+}
 @header {
 	import java.util.regex.Pattern;
 }
@@ -28,23 +40,27 @@ public class EAPIFeatures
 }
 
 
-depend: WS? (expr WS?)?;
+depend: WS? expr? WS? -> expr?;
 
-expr	:	expr_type (WS expr_type)*;
+expr	:	expr_type (WS expr_type)* -> expr_type+;
 
 expr_type:
 	any_of | use_conditional | all_of | pkg_dep;
 
 all_of
-	: '(' WS expr WS ')';
+	: '(' WS expr WS ')' -> ^(ALL_OF expr);
 any_of
-	:	'||' WS '(' WS (expr WS)* ')';
+	:	'||' WS '(' WS (expr WS)* ')' -> ^(ANY_OF expr+);
 
 use_conditional
-	:	'!'? use_flag '?' WS '(' WS (expr WS)* ')';
+	:	use_conditional_start '?' WS '(' WS (expr WS)* ')' -> ^(USE_CONDITIONAL use_conditional_start expr+);
+
+use_conditional_start:
+	NOT use_flag -> ^(use_flag NEGATIVE)
+	| use_flag -> ^(use_flag POSITIVE);
 
 pkg_dep
-	:	block_oper? (versioned_dep | qpn) slot_dep? use_dep?;
+	:	block_oper? (versioned_dep | qpn) slot_dep? use_dep? -> ^(PKG_DEP );
 
 versioned_dep
 @init {
@@ -78,7 +94,7 @@ slot_dep:
 	| {!features.SLOT_DEPENDS}?=>;
 
 
-qpn	:	 category '/' pn;
+qpn	:	 category '/' pn -> category PN[$pn.text];
 
 pn	:	pn_start 
 	|	pn_start pn_end;
@@ -95,12 +111,12 @@ pn_follows
 	 | {!needs_version}?=> (WS|EOF);
 
 slot_name
-	:	name[true,true,true,false];
+	:	name[true,true,true,false] -> SLOT[$slot_name.text];
 
 // must begin with alphanumerics
-use_flag:	name[false,false,false,true];
+use_flag:	name[false,false,false,true] -> USE_FLAG[$use_flag.text];
 
-category:	name[true,true,true,false];
+category:	name[true,true,true,false] -> CATEGORY[$category.text];
 
 name[boolean start_plus,
      boolean start_under,
@@ -140,6 +156,7 @@ fragment REVISION_START: '-r';
 ALPHA: (LOWER|UPPER)+;
 
 HYPHEN: '-';
+NOT:	'!';
 OPERATOR:	'<' | '<=' | '~' | '>=' | '>';
 EQUALS:	'=';
 
