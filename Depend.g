@@ -3,6 +3,7 @@ grammar Depend;
 options {
 	backtrack=true;
 	output=AST;
+	language=Python;
 }
 tokens {
 	ALL_OF;
@@ -17,26 +18,16 @@ tokens {
 	USE_FLAG;
 }
 @header {
-	import java.util.regex.Pattern;
+import re
+
 }
 
-@members {
-public class EAPIFeatures
-{
-	public static final boolean DEFAULT = true;
-	public boolean STRONG_BLOCK = DEFAULT;
-	public boolean SLOT_DEPENDS = DEFAULT;
-	public boolean USE_DEPENDS = DEFAULT;
-}
-
-	private EAPIFeatures features = new EAPIFeatures();
-	private Pattern pn_end = Pattern.compile(".*-\\d+");
-	private boolean needs_version;
-	private boolean accept_asterisk;
-	public DependParser(TokenStream input, EAPIFeatures features) {
-		this(input);
-		this.features = features;
-	}
+@init {
+default = True;
+self.features = {'STRONG_BLOCK':default,'SLOT_DEPENDS':default,'USE_DEPENDS':default}
+self.pn_end = re.compile('.*-\d+')
+self.needs_version = False
+self.accept_asterisk = False
 }
 
 
@@ -64,64 +55,64 @@ pkg_dep
 
 versioned_dep
 @init {
-	needs_version = true;
+	self.needs_version = true;
 }
 @after {
-	needs_version = false;
-	accept_asterisk = false;
+	self.needs_version = false;
+	self.accept_asterisk = false;
 }
 :	OPERATOR qpn version_spec
-	| EQUALS {accept_asterisk=true;} qpn version_spec;
+	| EQUALS {self.accept_asterisk=True} qpn version_spec;
 
-block_oper	:	'!' ({features.STRONG_BLOCK}?=> '!'?);
+block_oper	:	'!' ({self.features['STRONG_BLOCK']}?=> '!'?);
 
 version_spec
 	:	EAPI0_VERSION_SPEC  asterisk?;
 
 asterisk:
-	{accept_asterisk}?=> '*'
-	| {!accept_asterisk}?=>;
+	{self.accept_asterisk}?=> '*'
+	| {not self.accept_asterisk}?=>;
 
 use_dep	:
-	{features.USE_DEPENDS}?=> '[' use_dep_atom (',' use_dep_atom)* ']'
-	| {!features.USE_DEPENDS}?=> ;
+	{self.features['USE_DEPENDS']}?=> '[' use_dep_atom (',' use_dep_atom)* ']'
+	| {not self.features['USE_DEPENDS']}?=> ;
 
 use_dep_atom
 	:	('!'|HYPHEN)? use_flag (EQUALS|'?')?;
 
 slot_dep:
-	{features.SLOT_DEPENDS}?=> ':' slot_name
-	| {!features.SLOT_DEPENDS}?=>;
+	{self.features['SLOT_DEPENDS']}?=> ':' slot_name
+	| {not self.features['SLOT_DEPENDS']}?=>;
 
 
 qpn	:	 category '/' pn -> category PN[$pn.text];
 
-pn	:	pn_start 
+pn	:	pn_start
 	|	pn_start pn_end;
 
 pn_end
-	:	(options { greedy=false;} : pn_part)* (pn_part pn_follows)=> pn_part {!pn_end.matcher($pn_end.text).matches()}?;
+	:	(options { greedy=false;} : pn_part)* (pn_part pn_follows)=> pn_part {not pn_end.match($pn_end.text)}?;
 
 pn_start : INTEGER|ALPHA|'+'|'_';
 pn_part:  INTEGER|ALPHA|'+'|'_'|HYPHEN;
 
 pn_follows
 :
-	 {needs_version}?=> version_spec (WS|EOF) 
-	 | {!needs_version}?=> (WS|EOF);
+	 {self.needs_version}?=> version_spec (WS|EOF)
+	 | {not self.needs_version}?=> (WS|EOF);
 
 slot_name
-	:	name[true,true,true,false] -> SLOT[$slot_name.text];
+	:	name[True,True,True,False] -> SLOT[$slot_name.text];
 
 // must begin with alphanumerics
-use_flag:	name[false,false,false,true] -> USE_FLAG[$use_flag.text];
+use_flag:	name[False,False,False,True] -> USE_FLAG[$use_flag.text];
 
-category:	name[true,true,true,false] -> CATEGORY[$category.text];
+category:	name[True,True,True,False] -> CATEGORY[$category.text];
 
-name[boolean start_plus,
-     boolean start_under,
-     boolean end_dot,
-     boolean end_at]:
+name[start_plus,
+     start_under,
+     end_dot,
+     end_at]:
 	(
 	name_part
 	| {start_plus}? '+'
